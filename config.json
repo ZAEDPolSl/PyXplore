@@ -1,0 +1,13 @@
+{
+    "keywords": ["deep", "learning", ["histopathological", "h&e"], "images"],
+    "content_type": [
+        "ContentType:Conferences",
+        "ContentType:Journals",
+        "ContentType:Books",
+        "ContentType:Magazines",
+        "ContentType:Early Access Articles",
+        "ContentType:Standards"
+      ],
+    "start_year": 2000,
+    "end_year": 2023
+}

@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "ieee"
+version = "0.1.0"
+description = ""
+authors = ["Seweryn Kalisz <sewkal96@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+lxml = "^4.9.2"
+pandas = "^1.5.3"
+requests = "^2.28.2"
+bs4 = "^0.0.1"
+pyarrow = "^11.0.0"
+ipykernel = "^6.21.2"
+matplotlib = "^3.7.0"
+openpyxl = "^3.1.1"
+seaborn = "^0.12.2"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
