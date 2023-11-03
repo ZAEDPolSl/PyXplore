@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "ieee"
+name = "pyXplore"
 version = "0.1.0"
 description = ""
-authors = ["Seweryn Kalisz <sewkal96@gmail.com>"]
+authors = ["Seweryn Kalisz <Seweryn.Kalisz@polsl.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
@@ -16,6 +16,7 @@ ipykernel = "^6.21.2"
 matplotlib = "^3.7.0"
 openpyxl = "^3.1.1"
 seaborn = "^0.12.2"
+tqdm = "^4.66.1"
 
 
 [build-system]

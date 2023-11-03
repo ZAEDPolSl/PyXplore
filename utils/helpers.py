@@ -1,50 +1,41 @@
-class Record:
-    
-    def __init__(self, 
-                title: str = None,
-                first_author: str = None,
-                authors: list[str] = None,
-                kind: str = None,
-                name: str = None,
-                github: str = None,
-                ieee_citations: int = None,
-                year: int = None,
-                abstract: str = None,
-                url: str = None,
-                id: int = None,
-                keywords: list[str] = None,
-                url_from_abstract = None
-    ):
-        self.title = title
-        self.first_author = first_author
-        self.authors = authors
-        self.kind = kind
-        self.name = name
-        self.github = github
-        self.ieee_citations = ieee_citations
-        self.year = year
-        self.abstract = abstract
-        self.url = url
-        self.id = id
-        self.keywords = keywords
-        self.url_from_abstract = url_from_abstract
+from dataclasses import dataclass, asdict
+import re
+from typing import Optional
 
-    def to_dict(self):
-        return {
-            "Title": self.title,
-            "Year": self.year,
-            "Kind": self.kind,
-            "Name": self.name,
-            "First author": self.first_author,
-            "Authors": self.authors,
-            "IEEE citations": self.ieee_citations,
-            "Github": self.github,
-            "Abstract": self.abstract,
-            "Website": self.url,
-            "Id": self.id,
-            "Keywords": self.keywords,
-            "URL from abstract": self.url_from_abstract
-        }
+GITHUB_REGEX = re.compile(r'github.com.*')
+SUB_REGEX = re.compile(r'<sub .*</sub>')
+URL_REGEX = re.compile(r'http.*')
+
+@dataclass
+class Record:
+    """Metadata for scientific records."""
+
+    id: int
+    title: str
+    url : str
+    authors: list[str]
+    kind: Optional[str] = None
+    source: Optional[str] = None
+    github: Optional[str] = None
+    citations: Optional[int] = None
+    year: Optional[int] = None
+    abstract: Optional[str] = None   
+    keywords: Optional[list[str]] = None
+    url_from_abstract: Optional[str] = None
+
+    def __post_init__(self):
+        if self.abstract:
+            self.abstract = re.sub(SUB_REGEX, '', self.abstract)
+            github_match = re.search(GITHUB_REGEX, self.abstract)
+            if github_match:
+                self.github = github_match[0]
+            http_match = re.search(URL_REGEX, self.abstract)
+            if http_match:
+                self.url_from_abstract = http_match[0]
+
+    def to_dict(self) -> dict:
+        return asdict(self)
+
 
 def get_all_metadata(keyword: str) -> str:
     return f"\"All Metadata\": \"{keyword}\""
@@ -55,17 +46,12 @@ def create_query_text(keyword: str) -> str:
     """
     return f"({get_all_metadata(keyword)})"
 
-def create_payload(config: dict) -> dict:
+def create_payload(keywords: list[str],
+                   start_year: int,
+                   end_year: int,
+                   content_type: list[str]) -> dict:
     query_text = []
-    default_content = [
-        "ContentType:Conferences",
-        "ContentType:Journals",
-        "ContentType:Books",
-        "ContentType:Magazines",
-        "ContentType:Early Access Articles",
-        "ContentType:Standards"
-      ]
-    for keyword in config['keywords']:
+    for keyword in keywords:
         if isinstance(keyword, list):
             query = [get_all_metadata(text) for text in keyword]
             query = " OR ".join(query)
@@ -79,9 +65,9 @@ def create_payload(config: dict) -> dict:
         "pageNumber": "1",
         "queryText": (" AND ".join(query_text)),
         "ranges": [
-            f"{config.get('start_year', 2000)}_{config.get('end_year', 2023)}_Year"
+            f"{start_year}_{end_year}_Year"
         ],
-        "refinements": config.get("content_type", default_content),
+        "refinements":content_type,
         "highlight": True,
         "returnFacets": [
             "ALL"
