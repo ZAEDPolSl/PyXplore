@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 
 from utils.ieee import IEEEXplorer
@@ -10,3 +11,6 @@ with open('config.json') as config:
 
 importer = IEEEXplorer(**config)
 importer.download_metadata()
+file_name = datetime.strftime(datetime.now(), '%Y%m%d%H%M')
+importer.results_df.to_parquet(f"{file_name}_search.parquet")
+importer.results_df.to_csv(f"{file_name}_search.csv")

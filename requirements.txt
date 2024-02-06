@@ -1,0 +1,11 @@
+lxml
+pandas
+requests
+bs4
+pyarrow
+ipykernel
+matplotlib
+openpyxl
+seaborn
+tqdm
+wordcloud
