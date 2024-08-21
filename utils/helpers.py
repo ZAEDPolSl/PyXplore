@@ -2,7 +2,8 @@ from dataclasses import dataclass, asdict
 import re
 from typing import Optional
 
-GITHUB_REGEX = re.compile(r'github.com.*')
+GITHUB_REGEX = re.compile(r"(github.com|git.io)/.*")
+TAG_REGEX = re.compile(r'<[^>]+>')
 SUB_REGEX = re.compile(r'<sub .*</sub>')
 URL_REGEX = re.compile(r'http.*')
 
@@ -28,7 +29,7 @@ class Record:
             self.abstract = re.sub(SUB_REGEX, '', self.abstract)
             github_match = re.search(GITHUB_REGEX, self.abstract)
             if github_match:
-                self.github = github_match[0]
+                self.github = TAG_REGEX.sub('',github_match[0])
             http_match = re.search(URL_REGEX, self.abstract)
             if http_match:
                 self.url_from_abstract = http_match[0]
